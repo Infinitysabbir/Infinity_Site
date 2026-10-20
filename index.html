@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2b2b2d">
+<meta name="color-scheme" content="dark">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Infinity | Premium Cinema</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<meta name="apple-mobile-web-app-title" content="Infinity">
+<link rel="preconnect" href="https://drive.google.com">
+<link rel="preconnect" href="https://drive.usercontent.google.com">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="orb a"></div><div class="orb b"></div><div class="orb c"></div>
+
+<nav class="glass" id="nav">
+  <div class="logo"><span class="infinity-icon">∞</span>INFINITY</div>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="loop-wrap">
+      <svg viewBox="0 0 500 250" aria-hidden="true">
+        <defs>
+          <linearGradient id="iri" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#00c6ff"/><stop offset=".35" stop-color="#ffffff"/>
+            <stop offset=".6" stop-color="#9fb0ff"/><stop offset=".8" stop-color="#ff9be0"/>
+            <stop offset="1" stop-color="#0072ff"/>
+          </linearGradient>
+          <linearGradient id="body" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stop-color="rgba(255,255,255,.35)"/><stop offset=".5" stop-color="rgba(255,255,255,.08)"/>
+            <stop offset="1" stop-color="rgba(255,255,255,.35)"/>
+          </linearGradient>
+        </defs>
+        <path d="M250,125 C320,30 460,30 460,125 C460,220 320,220 250,125 C180,30 40,30 40,125 C40,220 180,220 250,125Z" fill="none" stroke="#00c6ff" stroke-width="34" opacity=".14"/>
+        <path d="M250,125 C320,30 460,30 460,125 C460,220 320,220 250,125 C180,30 40,30 40,125 C40,220 180,220 250,125Z" fill="none" stroke="url(#body)" stroke-width="30" stroke-linejoin="round"/>
+        <path d="M250,125 C320,30 460,30 460,125 C460,220 320,220 250,125 C180,30 40,30 40,125 C40,220 180,220 250,125Z" fill="none" stroke="url(#iri)" stroke-width="3" opacity=".9"/>
+        <path d="M250,125 C320,42 446,42 446,125 C446,208 320,208 250,125 C180,42 54,42 54,125 C54,208 180,208 250,125Z" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".8"/>
+        <path class="flow" d="M250,125 C320,30 460,30 460,125 C460,220 320,220 250,125 C180,30 40,30 40,125 C40,220 180,220 250,125Z" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+      </svg>
+      <div class="loop-shadow"></div>
+    </div>
+    <h1 class="fade-up">Cinema, without limits.</h1>
+    <p class="fade-up d2">Stream endless stories in a crystal-clear experience. Discover new releases, timeless classics and hidden gems.</p>
+    <button class="btn fade-up d3" id="browse">Browse movies</button>
+  </div>
+  <div class="scroll-cue" aria-hidden="true"></div>
+</header>
+
+<main id="movies">
+  <div class="section-head">
+    <div><h2>Now showing</h2><small id="count"></small></div>
+    <input class="search glass" id="search" type="search" placeholder="Search movies…" autocomplete="off" enterkeyhint="search" aria-label="Search movies">
+  </div>
+  <div class="chips" id="chips" role="tablist" aria-label="Categories"></div>
+  <div class="grid" id="grid"></div>
+  <div class="empty" id="empty" hidden><b>No movies found</b>Try a different word or category.</div>
+</main>
+
+<footer>© 2026 Infinity Streaming. Designed exclusively for you.</footer>
+
+<div class="toast glass" id="toast" role="status" aria-live="polite"></div>
+
+<!-- PLAYER (VLC-style) -->
+<div class="overlay" id="overlay" aria-hidden="true">
+  <div class="vlc loading paused" id="frameBox" role="dialog" aria-modal="true" aria-labelledby="mTitle">
+    <video id="video" playsinline webkit-playsinline preload="auto"></video>
+    <iframe id="videoFrame" src="about:blank" title="Movie player" hidden
+            allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowfullscreen webkitallowfullscreen mozallowfullscreen></iframe>
+
+    <div class="tapzone" id="tapzone"></div>
+    <div class="fx l" id="fxL">« 10s</div>
+    <div class="fx r" id="fxR">10s »</div>
+    <div class="buffer"><div class="ring"></div></div>
+    <div class="hud" id="hud"><span id="hudIcon"></span><span id="hudText"></span></div>
+    <div class="subs" id="subs" aria-live="off"></div>
+
+    <div class="notice" id="notice" role="alert" hidden>
+      <b>No sound?</b>
+      <span id="noticeText">This file's audio format (AC-3 / DTS) can't be decoded by your browser.</span>
+      <div class="nbtns">
+        <button class="nbtn pri" id="noticeDrive" type="button">Use Drive player</button>
+        <button class="nbtn" id="noticeClose" type="button">Dismiss</button>
+      </div>
+    </div>
+
+    <div class="vtop" id="vtop">
+      <button class="vb" id="close" aria-label="Close player"></button>
+      <div class="vtitles"><b id="mTitle">Movie</b><small id="mSub"></small></div>
+      <button class="vb" id="fsBtn" aria-label="Fullscreen"></button>
+    </div>
+
+    <button class="vb unlock" id="unlockBtn" aria-label="Unlock controls"></button>
+
+    <div class="menu" id="menu" role="menu">
+      <h4>Playback speed</h4>
+      <div class="speeds" id="speedRow"></div>
+      <button class="mi" id="audioItem" role="menuitem"><span id="audioIcon"></span><span>Audio track</span><em id="audioName">Default</em></button>
+      <button class="mi" id="subItem" role="menuitem"><span id="subIcon"></span><span>Subtitles</span><em id="subName">Off</em></button>
+      <button class="mi" id="aspectItem" role="menuitem"><span id="aspectIcon"></span><span>Aspect ratio</span><em id="aspectName">Best fit</em></button>
+      <button class="mi" id="switchBtn" role="menuitem"><span id="switchIcon"></span><span>No sound / not playing? Use Drive player</span></button>
+      <a class="mi" id="driveLink" href="#" target="_blank" rel="noopener" role="menuitem"><span id="openIcon"></span><span>Open in Google Drive</span></a>
+    </div>
+
+    <div class="menu panel" id="panel" role="menu" aria-label="Audio and subtitles">
+      <div class="phead"><button class="pback vb" id="panelBack" aria-label="Back"></button><h4 id="panelTitle">Subtitles</h4></div>
+      <div class="plist" id="panelList"></div>
+      <div class="pextra" id="panelExtra"></div>
+    </div>
+
+    <div class="vbottom" id="vbottom">
+      <div class="seekrow">
+        <span class="tm" id="tCur">00:00</span>
+        <div class="seek" id="seek" role="slider" aria-label="Seek" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" tabindex="0">
+          <div class="track" id="track">
+            <div class="buf" id="bufBar"></div>
+            <div class="prog" id="progBar"></div>
+            <div class="thumb" id="thumb"></div>
+            <div class="tip" id="tip">00:00</div>
+          </div>
+        </div>
+        <span class="tm" id="tEnd" title="Tap to switch between total and remaining time">-00:00</span>
+      </div>
+      <div class="btnrow">
+        <div class="grp">
+          <button class="vb" id="lockBtn" aria-label="Lock controls"></button>
+          <button class="vb" id="aspectBtn" aria-label="Aspect ratio"></button>
+          <span class="achip" id="aspectChip">Best fit</span>
+        </div>
+        <div class="grp mid">
+          <button class="vb" id="backBtn" aria-label="Back 10 seconds"></button>
+          <button class="vb play" id="ppBtn" aria-label="Play"></button>
+          <button class="vb" id="fwdBtn" aria-label="Forward 10 seconds"></button>
+        </div>
+        <div class="grp end">
+          <button class="vb" id="audioBtn" aria-label="Audio track" aria-haspopup="true"></button>
+          <button class="vb" id="ccBtn" aria-label="Subtitles" aria-haspopup="true"></button>
+          <button class="vb" id="moreBtn" aria-label="More options" aria-haspopup="true"></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- THE FILE YOU EDIT TO ADD MOVIES -->
+<script src="movies.js"></script>
+
+<script src="js/app.js"></script>
+</body>
+</html>

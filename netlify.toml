@@ -1,0 +1,19 @@
+# Netlify settings. Nothing to build: this is a plain static site plus one edge function.
+[build]
+  publish = "."
+
+# index.html and movies.js must always be fresh so new movies appear instantly.
+[[headers]]
+  for = "/index.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/movies.js"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
